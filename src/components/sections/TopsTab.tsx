@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import TopAuthorsTable from "../TopAuthorsTable";
 import TopMessagesTable from "../TopMessagesTable";
 import { buildTopAuthors } from "../../lib/stats";
@@ -10,9 +10,13 @@ type RankedMessage = ParsedMessage & { __reactions: number };
 export default function TopsTab({
   humans,
   chatSlug,
+  pageSize,
+  showMessageLinks,
 }: {
   humans: ParsedMessage[];
   chatSlug: string;
+  pageSize: number;
+  showMessageLinks: boolean;
 }) {
   const topAuthorsAll = useMemo(
     () => buildTopAuthors(humans, 10_000),
@@ -20,7 +24,7 @@ export default function TopsTab({
   );
 
   const [authorPage, setAuthorPage] = useState(0);
-  const pageSizeAuthors = 10;
+  const pageSizeAuthors = pageSize;
   const topAuthorsPaged: Row[] = useMemo(
     () =>
       pageSlice(topAuthorsAll, authorPage, pageSizeAuthors).map(
@@ -30,7 +34,7 @@ export default function TopsTab({
           count: r.count ?? 0,
         }),
       ),
-    [topAuthorsAll, authorPage],
+    [authorPage, pageSizeAuthors, topAuthorsAll],
   );
 
   const sortedByReactions = useMemo(() => {
@@ -44,7 +48,12 @@ export default function TopsTab({
 
   type MessageRow = Row & { id?: number };
   const [msgPage, setMsgPage] = useState(0);
-  const pageSizeMsgs = 10;
+  const pageSizeMsgs = pageSize;
+  useEffect(() => {
+    setAuthorPage(0);
+    setMsgPage(0);
+  }, [humans, pageSize]);
+
   const topMessagesPaged: MessageRow[] = useMemo(
     () =>
       pageSlice(sortedByReactions, msgPage, pageSizeMsgs).map(
@@ -56,13 +65,13 @@ export default function TopsTab({
           reactions: m.__reactions,
         }),
       ),
-    [sortedByReactions, msgPage],
+    [msgPage, pageSizeMsgs, sortedByReactions],
   );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* слева — авторы (таблица -> card тут) */}
-      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+      <div className="card relative">
         <div className="flex justify-between items-center mb-3">
           <div className="hdr">👤 Топ авторов</div>
           {topAuthorsAll.length > pageSizeAuthors && (
@@ -96,7 +105,7 @@ export default function TopsTab({
       </div>
 
       {/* справа — сообщения (таблица -> card тут) */}
-      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+      <div className="card relative">
         <div className="flex justify-between items-center mb-3">
           <div className="hdr">🔥 Топ сообщений</div>
           {sortedByReactions.length > pageSizeMsgs && (
@@ -126,7 +135,10 @@ export default function TopsTab({
             </div>
           )}
         </div>
-        <TopMessagesTable rows={topMessagesPaged as any} chatSlug={chatSlug} />
+        <TopMessagesTable
+          rows={topMessagesPaged as any}
+          chatSlug={showMessageLinks ? chatSlug : undefined}
+        />
       </div>
     </div>
   );

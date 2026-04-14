@@ -1,5 +1,5 @@
 // src/components/sections/ReactionsTab.tsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactionsChart from "../reactions/ReactionsChart";
 import TopEmojisTable from "../reactions/TopEmojisTable";
 import TopReactionAuthorsTable from "../reactions/TopReactionAuthorsTable";
@@ -14,9 +14,13 @@ import {
 export default function ReactionsTab({
   humans,
   chatSlug,
+  pageSize,
+  showMessageLinks,
 }: {
   humans: ParsedMessage[];
   chatSlug: string;
+  pageSize: number;
+  showMessageLinks: boolean;
 }) {
   const classicByMessageId = useMemo(() => {
     const out = new Map<number, { byEmoji: Record<string, number>; total: number }>();
@@ -61,7 +65,11 @@ export default function ReactionsTab({
 
   // Пагинация таблицы «Популярные эмодзи»
   const [emojiPage, setEmojiPage] = useState(0);
-  const emojiPageSize = 10;
+  const emojiPageSize = pageSize;
+  useEffect(() => {
+    setEmojiPage(0);
+  }, [humans, pageSize]);
+
   const emojiTopPaged = useMemo(
     () =>
       pageSlice(emojiCountsAll, emojiPage, emojiPageSize).map(
@@ -71,7 +79,7 @@ export default function ReactionsTab({
           count: e.count,
         }),
       ),
-    [emojiCountsAll, emojiPage],
+    [emojiCountsAll, emojiPage, emojiPageSize],
   );
 
   // 👥 Авторы по реакциям
@@ -80,7 +88,11 @@ export default function ReactionsTab({
     [humans],
   );
   const [reactAuthorPage, setReactAuthorPage] = useState(0);
-  const reactAuthorPageSize = 10;
+  const reactAuthorPageSize = pageSize;
+  useEffect(() => {
+    setReactAuthorPage(0);
+  }, [humans, pageSize]);
+
   const reactAuthorsPaged: Row[] = useMemo(
     () =>
       pageSlice(reactAuthorsAll, reactAuthorPage, reactAuthorPageSize).map(
@@ -90,7 +102,7 @@ export default function ReactionsTab({
           reactions: r.reactions ?? 0,
         }),
       ),
-    [reactAuthorsAll, reactAuthorPage],
+    [reactAuthorPage, reactAuthorPageSize, reactAuthorsAll],
   );
 
   // 😁 Топ сообщений по реакциям (фильтр по выбранным эмодзи)
@@ -127,7 +139,11 @@ export default function ReactionsTab({
   }, [classicByMessageId, humans, selectedEmojis]);
 
   const [reactMsgPage, setReactMsgPage] = useState(0);
-  const reactMsgPageSize = 10;
+  const reactMsgPageSize = pageSize;
+  useEffect(() => {
+    setReactMsgPage(0);
+  }, [humans, pageSize, selectedEmojis]);
+
   const reactMsgsPaged = useMemo(
     () =>
       pageSlice(reactMsgsAll, reactMsgPage, reactMsgPageSize).map(
@@ -139,7 +155,7 @@ export default function ReactionsTab({
           ...m,
         }),
       ),
-    [reactMsgsAll, reactMsgPage],
+    [reactMsgPage, reactMsgPageSize, reactMsgsAll],
   );
 
   return (
@@ -150,7 +166,7 @@ export default function ReactionsTab({
       {/* Ряд: эмодзи и авторы по реакциям */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 😊 Популярные эмодзи */}
-        <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+        <div className="card relative">
           <div className="flex justify-between items-center mb-3">
             <div className="hdr">😊 Популярные эмодзи</div>
             {emojiCountsAll.length > emojiPageSize && (
@@ -184,7 +200,7 @@ export default function ReactionsTab({
         </div>
 
         {/* 👥 Авторы с наибольшим количеством реакций */}
-        <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+        <div className="card relative">
           <div className="flex justify-between items-center mb-3">
             <div className="hdr">
               👥 Авторы с наибольшим количеством реакций
@@ -222,7 +238,7 @@ export default function ReactionsTab({
       </div>
 
       {/* 😁 Топ сообщений по реакциям — заголовок + стрелки → блок эмодзи → таблица */}
-      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+      <div className="card relative">
         {/* Заголовок + стрелки справа */}
         <div className="flex justify-between items-center mb-3">
           <div className="hdr">😁 Топ сообщений по реакциям</div>
@@ -286,7 +302,7 @@ export default function ReactionsTab({
         {/* Таблица */}
         <TopReactionMessagesTable
           rows={reactMsgsPaged as any}
-          chatSlug={chatSlug}
+          chatSlug={showMessageLinks ? chatSlug : undefined}
         />
       </div>
     </>

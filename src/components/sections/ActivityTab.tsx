@@ -11,7 +11,13 @@ import {
 } from "../../lib/stats";
 import type { ParsedMessage } from "../../types";
 
-export default function ActivityTab({ humans }: { humans: ParsedMessage[] }) {
+export default function ActivityTab({
+  humans,
+  topDaysLimit,
+}: {
+  humans: ParsedMessage[];
+  topDaysLimit: number;
+}) {
   const dailyTop = useMemo(() => {
     const byDate = new Map<string, number>();
     humans.forEach((m) => {
@@ -23,8 +29,8 @@ export default function ActivityTab({ humans }: { humans: ParsedMessage[] }) {
       .sort((a, b) =>
         a.count === b.count ? (a.date > b.date ? -1 : 1) : b.count - a.count,
       )
-      .slice(0, 10);
-  }, [humans]);
+      .slice(0, topDaysLimit);
+  }, [humans, topDaysLimit]);
 
   const heat = useMemo(() => buildHourWeekdayHeatmap(humans), [humans]);
   const dailyChart = useMemo(() => buildDailyChart(humans), [humans]);
@@ -33,13 +39,13 @@ export default function ActivityTab({ humans }: { humans: ParsedMessage[] }) {
   return (
     <>
       {/* 🏆 Топ дней по сообщениям */}
-      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+      <div className="card relative">
         <div className="hdr mb-3">🏆 Топ дней по сообщениям</div>
         <TopDaysTable rows={dailyTop} />
       </div>
 
       {/* 🕒 По дням недели и часам — возвращённая рамка */}
-      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+      <div className="card relative">
         <div className="hdr mb-3">🕒 По дням недели и часам</div>
         <HourWeekdayHeatmap data={heat} />
       </div>

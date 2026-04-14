@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import WeeklyActiveAuthorsChart from "../social/WeeklyActiveAuthorsChart";
 import WeeklyNewAuthorsChart from "../social/WeeklyNewAuthorsChart";
 import StableAuthorsTable from "../social/StableAuthorsTable";
@@ -7,7 +7,13 @@ import { buildReplyGraph } from "../../lib/stats";
 import type { ParsedMessage, Row } from "../../types";
 import { pageSlice, weekKey, weekStartISO } from "../../lib/helpers";
 
-export default function SocialTab({ humans }: { humans: ParsedMessage[] }) {
+export default function SocialTab({
+  humans,
+  pageSize,
+}: {
+  humans: ParsedMessage[];
+  pageSize: number;
+}) {
   const latestNameByUser = useMemo(() => {
     const map = new Map<string, { name: string; iso: string }>();
     for (const m of humans) {
@@ -74,7 +80,11 @@ export default function SocialTab({ humans }: { humans: ParsedMessage[] }) {
   }, [humans, latestNameByUser]);
 
   const [stablePage, setStablePage] = useState(0);
-  const stablePageSize = 10;
+  const stablePageSize = pageSize;
+  useEffect(() => {
+    setStablePage(0);
+  }, [humans, pageSize]);
+
   const stablePaged: Row[] = useMemo(
     () =>
       pageSlice(stableAll, stablePage, stablePageSize).map(
@@ -84,7 +94,7 @@ export default function SocialTab({ humans }: { humans: ParsedMessage[] }) {
           weeks: r.weeks,
         }),
       ),
-    [stableAll, stablePage],
+    [stableAll, stablePage, stablePageSize],
   );
 
   const replyGraph = useMemo(() => buildReplyGraph(humans), [humans]);
@@ -96,7 +106,7 @@ export default function SocialTab({ humans }: { humans: ParsedMessage[] }) {
       <WeeklyNewAuthorsChart data={weeklyNewData} />
 
       {/* Таблица — card здесь */}
-      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+      <div className="card relative">
         <div className="flex justify-between items-center mb-3">
           <div className="hdr">📅 Стабильные авторы (пишут каждую неделю)</div>
           {stableAll.length > stablePageSize && (

@@ -11,7 +11,7 @@ export default function ChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+    <div className="card relative">
       <div className="flex justify-between items-center mb-3">
         <div className="hdr">{title}</div>
         {right}

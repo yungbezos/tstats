@@ -7,6 +7,7 @@ import ActivityTab from "./components/sections/ActivityTab";
 import TopsTab from "./components/sections/TopsTab";
 import ContentTab from "./components/sections/ContentTab";
 import ReactionsTab from "./components/sections/ReactionsTab";
+import SettingsTab from "./components/sections/SettingsTab";
 
 const SocialTab = React.lazy(() => import("./components/sections/SocialTab"));
 
@@ -31,6 +32,8 @@ type WorkerError = {
   message: string;
 };
 
+type TabKey = "settings" | "activity" | "tops" | "content" | "reactions" | "social";
+
 export default function App() {
   const workerRef = useRef<Worker | null>(null);
   const requestIdRef = useRef(0);
@@ -49,6 +52,12 @@ export default function App() {
   const [toDate, setToDate] = useState("");
   const [authorQuery, setAuthorQuery] = useState("");
   const [minReactions, setMinReactions] = useState("");
+  const [displaySettings, setDisplaySettings] = useState({
+    tablePageSize: 10,
+    topDaysLimit: 10,
+    longestMessagesLimit: 10,
+    showMessageLinks: true,
+  });
 
   useEffect(() => {
     const worker = new Worker(new URL("./workers/parser.worker.ts", import.meta.url), {
@@ -117,6 +126,13 @@ export default function App() {
     }));
   };
 
+  const resetFilters = () => {
+    setFromDate("");
+    setToDate("");
+    setAuthorQuery("");
+    setMinReactions("");
+  };
+
   const humans = useMemo(() => {
     const query = authorQuery.trim().toLowerCase();
     const minR = Number(minReactions || 0);
@@ -147,9 +163,9 @@ export default function App() {
     };
   }, [humans]);
 
-  const [tab, setTab] = useState<
-    "activity" | "tops" | "content" | "reactions" | "social"
-  >("activity");
+  const [tab, setTab] = useState<TabKey>("settings");
+
+  const hasSource = sourceCount > 0 || !!sourceFile;
 
   return (
     <div className="storm-shell min-h-screen text-white">
@@ -173,144 +189,83 @@ export default function App() {
           error={parseError}
         />
 
-        {humans.length > 0 && (
+        {hasSource && (
           <div className="card">
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between gap-4 flex-wrap">
-                <div className="hdr">⚙️ Навигация</div>
-                <Tabs
-                  tabs={[
-                    { key: "activity", label: "Активность" },
-                    { key: "tops", label: "Топы" },
-                    { key: "content", label: "Контент" },
-                    { key: "reactions", label: "Реакции" },
-                    { key: "social", label: "Соц. динамика" },
-                  ]}
-                  value={tab}
-                  onChange={(k) => setTab(k as any)}
-                />
-              </div>
-
-              <div>
-                <label className="lbl">Чат для ссылок (slug)</label>
-                <input
-                  value={chatSlug}
-                  onChange={(e) => setChatSlug(e.target.value.trim())}
-                  placeholder="например: durov"
-                  className="input"
-                />
-              </div>
-
-              <div className="rounded-xl border border-sky-900/70 bg-slate-950/50 px-3 py-3">
-                <div className="lbl mb-2">Общие настройки импорта</div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 text-sm">
-                  <label className="switch-row">
-                    <input
-                      type="checkbox"
-                      checked={parseOptions.includeBots}
-                      onChange={() => setOption("includeBots")}
-                    />
-                    <span>Учитывать ботов</span>
-                  </label>
-                  <label className="switch-row">
-                    <input
-                      type="checkbox"
-                      checked={parseOptions.includeChannels}
-                      onChange={() => setOption("includeChannels")}
-                    />
-                    <span>Учитывать каналы</span>
-                  </label>
-                  <label className="switch-row">
-                    <input
-                      type="checkbox"
-                      checked={parseOptions.includeForwarded}
-                      onChange={() => setOption("includeForwarded")}
-                    />
-                    <span>Учитывать пересланные</span>
-                  </label>
-                  <label className="switch-row">
-                    <input
-                      type="checkbox"
-                      checked={parseOptions.includeServiceMessages}
-                      onChange={() => setOption("includeServiceMessages")}
-                    />
-                    <span>Учитывать сервисные</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-                <div>
-                  <label className="lbl">Дата от</label>
-                  <input
-                    type="date"
-                    value={fromDate}
-                    onChange={(e) => setFromDate(e.target.value)}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="lbl">Дата до</label>
-                  <input
-                    type="date"
-                    value={toDate}
-                    onChange={(e) => setToDate(e.target.value)}
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="lbl">Автор (поиск)</label>
-                  <input
-                    value={authorQuery}
-                    onChange={(e) => setAuthorQuery(e.target.value)}
-                    placeholder="например: Alice"
-                    className="input"
-                  />
-                </div>
-                <div>
-                  <label className="lbl">Мин. реакций на сообщение</label>
-                  <input
-                    value={minReactions}
-                    onChange={(e) => setMinReactions(e.target.value.replace(/[^0-9]/g, ""))}
-                    placeholder="0"
-                    className="input"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-                <div className="rounded-lg border border-sky-900/60 px-3 py-2 bg-slate-950/40">
-                  <div className="text-slate-400">Сообщений (фильтр)</div>
-                  <div className="text-lg font-semibold">{summary.messages}</div>
-                </div>
-                <div className="rounded-lg border border-sky-900/60 px-3 py-2 bg-slate-950/40">
-                  <div className="text-slate-400">Уникальных авторов</div>
-                  <div className="text-lg font-semibold">{summary.authors}</div>
-                </div>
-                <div className="rounded-lg border border-sky-900/60 px-3 py-2 bg-slate-950/40">
-                  <div className="text-slate-400">Всего реакций</div>
-                  <div className="text-lg font-semibold">{summary.reactions}</div>
-                </div>
-              </div>
-
-              <div className="text-xs text-slate-400">
-                Источник: {sourceCount} сообщений, после фильтрации: {humans.length}
-              </div>
+            <div className="flex justify-between gap-4 flex-wrap items-center">
+              <div className="hdr">🧭 Разделы</div>
+              <Tabs
+                tabs={[
+                  { key: "settings", label: "Настройки" },
+                  { key: "activity", label: "Активность" },
+                  { key: "tops", label: "Топы" },
+                  { key: "content", label: "Контент" },
+                  { key: "reactions", label: "Реакции" },
+                  { key: "social", label: "Соц. динамика" },
+                ]}
+                value={tab}
+                onChange={(k) => setTab(k as TabKey)}
+              />
             </div>
           </div>
         )}
 
+        {hasSource && tab === "settings" && (
+          <SettingsTab
+            chatSlug={chatSlug}
+            setChatSlug={setChatSlug}
+            fromDate={fromDate}
+            setFromDate={setFromDate}
+            toDate={toDate}
+            setToDate={setToDate}
+            authorQuery={authorQuery}
+            setAuthorQuery={setAuthorQuery}
+            minReactions={minReactions}
+            setMinReactions={setMinReactions}
+            parseOptions={parseOptions}
+            toggleParseOption={setOption}
+            displaySettings={displaySettings}
+            setDisplaySettings={setDisplaySettings}
+            sourceCount={sourceCount}
+            filteredCount={summary.messages}
+            uniqueAuthors={summary.authors}
+            totalReactions={summary.reactions}
+            onResetFilters={resetFilters}
+          />
+        )}
+
+        {hasSource && tab !== "settings" && humans.length === 0 && (
+          <div className="card text-slate-300">
+            По текущим фильтрам нет данных. Открой вкладку "Настройки" и ослабь фильтры.
+          </div>
+        )}
+
         {humans.length > 0 && tab === "activity" && (
-          <ActivityTab humans={humans} />
+          <ActivityTab humans={humans} topDaysLimit={displaySettings.topDaysLimit} />
         )}
         {humans.length > 0 && tab === "tops" && (
-          <TopsTab humans={humans} chatSlug={chatSlug} />
+          <TopsTab
+            humans={humans}
+            chatSlug={chatSlug}
+            pageSize={displaySettings.tablePageSize}
+            showMessageLinks={displaySettings.showMessageLinks}
+          />
         )}
         {humans.length > 0 && tab === "content" && (
-          <ContentTab humans={humans} chatSlug={chatSlug} />
+          <ContentTab
+            humans={humans}
+            chatSlug={chatSlug}
+            tablePageSize={displaySettings.tablePageSize}
+            longestLimit={displaySettings.longestMessagesLimit}
+            showMessageLinks={displaySettings.showMessageLinks}
+          />
         )}
         {humans.length > 0 && tab === "reactions" && (
-          <ReactionsTab humans={humans} chatSlug={chatSlug} />
+          <ReactionsTab
+            humans={humans}
+            chatSlug={chatSlug}
+            pageSize={displaySettings.tablePageSize}
+            showMessageLinks={displaySettings.showMessageLinks}
+          />
         )}
         {humans.length > 0 && tab === "social" && (
           <React.Suspense
@@ -320,7 +275,7 @@ export default function App() {
               </div>
             }
           >
-            <SocialTab humans={humans} />
+            <SocialTab humans={humans} pageSize={displaySettings.tablePageSize} />
           </React.Suspense>
         )}
 

@@ -6,7 +6,7 @@ export default function TopReactionMessagesTable({
   chatSlug,
 }: {
   rows: Row[];
-  chatSlug: string;
+  chatSlug?: string;
 }) {
   const mkLink = (id?: string | number) =>
     id != null && chatSlug ? `https://t.me/${chatSlug}/${id}` : undefined;

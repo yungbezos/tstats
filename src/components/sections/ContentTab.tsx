@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import TopWordsTable from "../content/TopWordsTable";
 import MediaStatsTable from "../content/MediaStatsTable";
 import LongestMessagesCard from "../content/LongestMessagesCard";
@@ -28,9 +28,15 @@ function canonicalMediaType(raw?: string): string {
 export default function ContentTab({
   humans,
   chatSlug,
+  tablePageSize,
+  longestLimit,
+  showMessageLinks,
 }: {
   humans: ParsedMessage[];
   chatSlug: string;
+  tablePageSize: number;
+  longestLimit: number;
+  showMessageLinks: boolean;
 }) {
   // ===== TOP WORDS =====
   const wordsAll = useMemo(() => {
@@ -46,7 +52,11 @@ export default function ContentTab({
   }, [humans]);
 
   const [wordsPage, setWordsPage] = useState(0);
-  const wordsPageSize = 10;
+  const wordsPageSize = tablePageSize;
+  useEffect(() => {
+    setWordsPage(0);
+  }, [humans, tablePageSize]);
+
   const wordsPaged = useMemo(
     () =>
       pageSlice(wordsAll, wordsPage, wordsPageSize).map((w, i) => ({
@@ -54,7 +64,7 @@ export default function ContentTab({
         word: w.word,
         count: w.count,
       })),
-    [wordsAll, wordsPage],
+    [wordsAll, wordsPage, wordsPageSize],
   );
 
   // ===== MEDIA STATS (нормализация + агрегация) =====
@@ -80,8 +90,8 @@ export default function ContentTab({
           length: String(m.text ?? "").length,
         }))
         .sort((a, b) => b.length - a.length)
-        .slice(0, 10),
-    [humans],
+        .slice(0, longestLimit),
+    [humans, longestLimit],
   );
 
   return (
@@ -89,7 +99,7 @@ export default function ContentTab({
       {/* Ряд: Топ слов (слева) + Медиа-статистика (справа) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Топ слов */}
-        <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+        <div className="card relative">
           <div className="flex justify-between items-center mb-3">
             <div className="hdr">📝 Топ слов</div>
             {wordsAll.length > wordsPageSize && (
@@ -119,14 +129,17 @@ export default function ContentTab({
         </div>
 
         {/* Медиа-статистика */}
-        <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
+        <div className="card relative">
           <div className="hdr mb-3">🖼️ Медиа-статистика</div>
           <MediaStatsTable stats={mediaStats} />
         </div>
       </div>
 
       {/* Самые длинные — единая карточка */}
-      <LongestMessagesCard rows={longRows} chatSlug={chatSlug} />
+      <LongestMessagesCard
+        rows={longRows}
+        chatSlug={showMessageLinks ? chatSlug : undefined}
+      />
     </div>
   );
 }

@@ -22,12 +22,17 @@
 }
 
 .card {
-  @apply rounded-2xl p-5 border shadow-xl backdrop-blur;
+  @apply rounded-2xl p-5 border shadow-xl backdrop-blur transition;
   background: linear-gradient(145deg, var(--tokyo-card-0), var(--tokyo-card-1));
   border-color: var(--tokyo-border);
   box-shadow:
     0 12px 28px rgba(3, 8, 20, 0.65),
     inset 0 1px 0 rgba(191, 219, 254, 0.06);
+}
+
+.card:hover {
+  border-color: rgba(125, 211, 252, 0.36);
+  transform: translateY(-1px);
 }
 
 .hdr {
@@ -77,6 +82,23 @@ body {
 
 .switch-row input {
   accent-color: var(--tokyo-accent-2);
+}
+
+.chip-btn {
+  @apply rounded-lg px-3 py-1.5 text-sm border;
+  background: rgba(8, 47, 73, 0.45);
+  border-color: rgba(125, 211, 252, 0.45);
+  color: #e0f2fe;
+}
+
+.chip-btn:hover {
+  background: rgba(8, 47, 73, 0.68);
+}
+
+.stat-card {
+  @apply rounded-lg border px-3 py-2;
+  border-color: rgba(125, 211, 252, 0.34);
+  background: rgba(3, 10, 24, 0.45);
 }
 
 /* Убираем внутреннюю обводку/рамку у card */

@@ -16,8 +16,7 @@ export default function ChartCard({
   return (
     <div
       className={
-        "card relative rounded-2xl bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 " +
-        "shadow-lg shadow-sky-500/20 " +
+        "card relative rounded-2xl " +
         (className ?? "")
       }
     >
