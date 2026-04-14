@@ -62,7 +62,7 @@ export default function TopsTab({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* слева — авторы (таблица -> card тут) */}
-      <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
         <div className="flex justify-between items-center mb-3">
           <div className="hdr">👤 Топ авторов</div>
           {topAuthorsAll.length > pageSizeAuthors && (
@@ -70,7 +70,7 @@ export default function TopsTab({
               <button
                 disabled={authorPage === 0}
                 onClick={() => setAuthorPage((p) => Math.max(0, p - 1))}
-                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
               >
                 ←
               </button>
@@ -85,7 +85,7 @@ export default function TopsTab({
                       : p + 1,
                   )
                 }
-                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
               >
                 →
               </button>
@@ -96,7 +96,7 @@ export default function TopsTab({
       </div>
 
       {/* справа — сообщения (таблица -> card тут) */}
-      <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
         <div className="flex justify-between items-center mb-3">
           <div className="hdr">🔥 Топ сообщений</div>
           {sortedByReactions.length > pageSizeMsgs && (
@@ -104,7 +104,7 @@ export default function TopsTab({
               <button
                 disabled={msgPage === 0}
                 onClick={() => setMsgPage((p) => Math.max(0, p - 1))}
-                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
               >
                 ←
               </button>
@@ -119,7 +119,7 @@ export default function TopsTab({
                       : p + 1,
                   )
                 }
-                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
               >
                 →
               </button>

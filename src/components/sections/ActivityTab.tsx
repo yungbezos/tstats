@@ -33,13 +33,13 @@ export default function ActivityTab({ humans }: { humans: ParsedMessage[] }) {
   return (
     <>
       {/* 🏆 Топ дней по сообщениям */}
-      <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
         <div className="hdr mb-3">🏆 Топ дней по сообщениям</div>
         <TopDaysTable rows={dailyTop} />
       </div>
 
       {/* 🕒 По дням недели и часам — возвращённая рамка */}
-      <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
         <div className="hdr mb-3">🕒 По дням недели и часам</div>
         <HourWeekdayHeatmap data={heat} />
       </div>

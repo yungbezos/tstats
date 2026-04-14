@@ -96,7 +96,7 @@ export default function SocialTab({ humans }: { humans: ParsedMessage[] }) {
       <WeeklyNewAuthorsChart data={weeklyNewData} />
 
       {/* Таблица — card здесь */}
-      <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
         <div className="flex justify-between items-center mb-3">
           <div className="hdr">📅 Стабильные авторы (пишут каждую неделю)</div>
           {stableAll.length > stablePageSize && (
@@ -104,7 +104,7 @@ export default function SocialTab({ humans }: { humans: ParsedMessage[] }) {
               <button
                 disabled={stablePage === 0}
                 onClick={() => setStablePage((p) => Math.max(0, p - 1))}
-                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
               >
                 ←
               </button>
@@ -115,7 +115,7 @@ export default function SocialTab({ humans }: { humans: ParsedMessage[] }) {
                     (p + 1) * stablePageSize >= stableAll.length ? p : p + 1,
                   )
                 }
-                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
               >
                 →
               </button>

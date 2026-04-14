@@ -80,8 +80,8 @@ export default function ThemedArea({
             <Area
               type="monotone"
               dataKey={yKey}
-              stroke="rgba(168,85,247,0.9)"
-              fill="rgba(168,85,247,0.25)"
+              stroke="rgba(34,211,238,0.92)"
+              fill="rgba(56,189,248,0.2)"
               strokeWidth={2}
               dot={false}
               activeDot={{ r: 3 }}

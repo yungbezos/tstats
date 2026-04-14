@@ -89,7 +89,7 @@ export default function ContentTab({
       {/* Ряд: Топ слов (слева) + Медиа-статистика (справа) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Топ слов */}
-        <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+        <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
           <div className="flex justify-between items-center mb-3">
             <div className="hdr">📝 Топ слов</div>
             {wordsAll.length > wordsPageSize && (
@@ -97,7 +97,7 @@ export default function ContentTab({
                 <button
                   disabled={wordsPage === 0}
                   onClick={() => setWordsPage((p) => Math.max(0, p - 1))}
-                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
                 >
                   ←
                 </button>
@@ -108,7 +108,7 @@ export default function ContentTab({
                       (p + 1) * wordsPageSize >= wordsAll.length ? p : p + 1,
                     )
                   }
-                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
                 >
                   →
                 </button>
@@ -119,7 +119,7 @@ export default function ContentTab({
         </div>
 
         {/* Медиа-статистика */}
-        <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+        <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
           <div className="hdr mb-3">🖼️ Медиа-статистика</div>
           <MediaStatsTable stats={mediaStats} />
         </div>

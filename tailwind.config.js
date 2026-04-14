@@ -5,13 +5,13 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          light: "#c084fc", // светлый фиолетовый
-          DEFAULT: "#a855f7", // основной фиолетовый
-          dark: "#7e22ce", // тёмный фиолетовый
+          light: "#7dd3fc",
+          DEFAULT: "#22d3ee",
+          dark: "#0284c7",
         },
       },
       boxShadow: {
-        brand: "0 4px 14px 0 rgba(168, 85, 247, 0.4)",
+        brand: "0 8px 24px 0 rgba(34, 211, 238, 0.35)",
       },
     },
   },

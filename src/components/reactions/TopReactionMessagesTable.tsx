@@ -42,7 +42,7 @@ export default function TopReactionMessagesTable({
                       href={link}
                       target="_blank"
                       rel="noreferrer"
-                      className="underline decoration-purple-500/60"
+                      className="underline decoration-cyan-500/70"
                     >
                       {r.text || "(без текста)"}
                     </a>

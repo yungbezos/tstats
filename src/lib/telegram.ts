@@ -5,6 +5,20 @@ import { ParsedMessage, RawMessage } from "../types";
 
 const BOT_SUFFIXES = ["bot", "бот"];
 
+export type ParseOptions = {
+  includeBots: boolean;
+  includeChannels: boolean;
+  includeForwarded: boolean;
+  includeServiceMessages: boolean;
+};
+
+export const DEFAULT_PARSE_OPTIONS: ParseOptions = {
+  includeBots: false,
+  includeChannels: false,
+  includeForwarded: false,
+  includeServiceMessages: false,
+};
+
 function looksLikeBot(name?: string): boolean {
   if (!name) return false;
   const s = String(name).trim().toLowerCase();
@@ -59,26 +73,30 @@ function normalizeReactions(raw: RawMessage): Record<string, number> {
 }
 
 /** Глобальный предикат допуска сообщения (по raw) */
-function allowRawMessage(raw: RawMessage): boolean {
-  if (isService(raw)) return false; // только type==="message"
-  if (isForwarded(raw)) return false; // без пересланных
+function allowRawMessage(raw: RawMessage, options: ParseOptions): boolean {
+  if (!options.includeServiceMessages && isService(raw)) return false;
+  if (!options.includeForwarded && isForwarded(raw)) return false;
   const fromId: string | undefined = raw?.from_id;
   const fromName: string | undefined = raw?.from;
-  // только люди: user…; любое channel… — вон
-  if (!isUserId(fromId)) return false;
-  // боты по нику
-  if (looksLikeBot(fromName)) return false;
+
+  if (!fromId) return false;
+  if (!options.includeChannels && !isUserId(fromId)) return false;
+  if (!options.includeBots && looksLikeBot(fromName)) return false;
+
   return true;
 }
 
 /* ======================= core ======================= */
 
-export function parseMessages(messages: RawMessage[]): ParsedMessage[] {
+export function parseMessages(
+  messages: RawMessage[],
+  options: ParseOptions = DEFAULT_PARSE_OPTIONS,
+): ParsedMessage[] {
   const latestNameByUser: Record<string, { name: string; iso: string }> = {};
   const parsed: ParsedMessage[] = [];
 
   for (const m of messages) {
-    if (!allowRawMessage(m)) continue;
+    if (!allowRawMessage(m, options)) continue;
 
     const text = normalizeText(m.text);
     const reactions = normalizeReactions(m);

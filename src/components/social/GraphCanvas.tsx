@@ -226,7 +226,7 @@ export default function GraphCanvas({
             : touchesSelectedNode
               ? 0.5
               : 0.12;
-          return `rgba(167,139,250,${alpha})`;
+          return `rgba(56,189,248,${alpha})`;
         }}
         linkWidth={(l: any) =>
           0.6 + 0.8 * (Math.min(l.__w ?? 0, maxPairW) / (maxPairW || 1))
@@ -247,8 +247,8 @@ export default function GraphCanvas({
           ctx.beginPath();
           ctx.arc(n.x, n.y, r, 0, 2 * Math.PI, false);
           ctx.fillStyle = dim
-            ? "rgba(167,139,250,0.9)"
-            : "rgba(167,139,250,0.2)";
+            ? "rgba(56,189,248,0.9)"
+            : "rgba(56,189,248,0.2)";
           ctx.fill();
           ctx.lineWidth = dim ? 1 : 0.5;
           ctx.strokeStyle = dim
@@ -258,7 +258,7 @@ export default function GraphCanvas({
 
           const label = n.name || String(id);
           const fontSize = 12 / Math.sqrt(scale);
-          ctx.font = `${fontSize}px Inter, system-ui, -apple-system, Segoe UI, Roboto`;
+          ctx.font = `${fontSize}px Space Grotesk, IBM Plex Sans, system-ui, sans-serif`;
           ctx.textAlign = "center";
           ctx.textBaseline = "top";
           ctx.fillStyle = dim

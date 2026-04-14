@@ -35,7 +35,7 @@ export default function FileDrop({
     <div
       onDragOver={(e) => e.preventDefault()}
       onDrop={onDrop}
-      className="card border-2 border-dashed border-blue-700 bg-[#0f172a] text-center py-10 cursor-pointer hover:bg-[#1e293b] transition"
+      className="card border-2 border-dashed border-sky-500/50 bg-slate-950/45 text-center py-10 cursor-pointer hover:bg-slate-900/70 transition"
       onClick={() => inputRef.current?.click()}
     >
       <input

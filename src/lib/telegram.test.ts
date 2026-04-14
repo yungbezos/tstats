@@ -66,4 +66,34 @@ describe("parseMessages", () => {
     expect(reactions?.["custom:777"]).toBe(3);
     expect(parsed[0]?.total).toBe(5);
   });
+
+  it("can include channels and service events via options", () => {
+    const input: RawMessage[] = [
+      {
+        id: 50,
+        type: "message",
+        from: "News Feed",
+        from_id: "channel123",
+        text: "announcement",
+        date: "2026-01-01T10:00:00Z",
+      },
+      {
+        id: 51,
+        type: "service",
+        from: "Alice",
+        from_id: "user1",
+        text: "service event",
+        date: "2026-01-01T11:00:00Z",
+      },
+    ];
+
+    const parsed = parseMessages(input, {
+      includeBots: false,
+      includeChannels: true,
+      includeForwarded: false,
+      includeServiceMessages: true,
+    });
+
+    expect(parsed.map((x) => x.id)).toEqual([50, 51]);
+  });
 });

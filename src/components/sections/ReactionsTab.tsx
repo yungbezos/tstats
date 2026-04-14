@@ -150,7 +150,7 @@ export default function ReactionsTab({
       {/* Ряд: эмодзи и авторы по реакциям */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 😊 Популярные эмодзи */}
-        <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+        <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
           <div className="flex justify-between items-center mb-3">
             <div className="hdr">😊 Популярные эмодзи</div>
             {emojiCountsAll.length > emojiPageSize && (
@@ -158,7 +158,7 @@ export default function ReactionsTab({
                 <button
                   disabled={emojiPage === 0}
                   onClick={() => setEmojiPage((p) => Math.max(0, p - 1))}
-                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
                 >
                   ←
                 </button>
@@ -173,7 +173,7 @@ export default function ReactionsTab({
                         : p + 1,
                     )
                   }
-                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
                 >
                   →
                 </button>
@@ -184,7 +184,7 @@ export default function ReactionsTab({
         </div>
 
         {/* 👥 Авторы с наибольшим количеством реакций */}
-        <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+        <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
           <div className="flex justify-between items-center mb-3">
             <div className="hdr">
               👥 Авторы с наибольшим количеством реакций
@@ -194,7 +194,7 @@ export default function ReactionsTab({
                 <button
                   disabled={reactAuthorPage === 0}
                   onClick={() => setReactAuthorPage((p) => Math.max(0, p - 1))}
-                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
                 >
                   ←
                 </button>
@@ -210,7 +210,7 @@ export default function ReactionsTab({
                         : p + 1,
                     )
                   }
-                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                  className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
                 >
                   →
                 </button>
@@ -222,7 +222,7 @@ export default function ReactionsTab({
       </div>
 
       {/* 😁 Топ сообщений по реакциям — заголовок + стрелки → блок эмодзи → таблица */}
-      <div className="card relative bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+      <div className="card relative bg-gradient-to-br from-[#11203f]/80 to-[#0a142b]/90 shadow-lg shadow-sky-500/20">
         {/* Заголовок + стрелки справа */}
         <div className="flex justify-between items-center mb-3">
           <div className="hdr">😁 Топ сообщений по реакциям</div>
@@ -231,7 +231,7 @@ export default function ReactionsTab({
               <button
                 disabled={reactMsgPage === 0}
                 onClick={() => setReactMsgPage((p) => Math.max(0, p - 1))}
-                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
                 aria-label="Назад"
               >
                 ←
@@ -247,7 +247,7 @@ export default function ReactionsTab({
                       : p + 1,
                   )
                 }
-                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-purple-600 focus:ring-2 focus:ring-purple-500 disabled:opacity-40"
+                className="px-3 py-1 bg-slate-700 rounded-full hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500 disabled:opacity-40"
                 aria-label="Вперед"
               >
                 →
@@ -264,7 +264,7 @@ export default function ReactionsTab({
               <button
                 key={e}
                 onClick={() => toggleEmoji(e)}
-                className={`px-2 py-1 rounded-full border border-slate-700 ${active ? "bg-purple-600" : "bg-slate-700 hover:bg-purple-500"
+                className={`px-2 py-1 rounded-full border border-slate-700 ${active ? "bg-cyan-600" : "bg-slate-700 hover:bg-cyan-500"
                   } transition`}
                 title={e}
               >

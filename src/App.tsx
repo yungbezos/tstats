@@ -11,6 +11,10 @@ import ReactionsTab from "./components/sections/ReactionsTab";
 const SocialTab = React.lazy(() => import("./components/sections/SocialTab"));
 
 import type { ParsedMessage } from "./types";
+import {
+  DEFAULT_PARSE_OPTIONS,
+  type ParseOptions,
+} from "./lib/telegram";
 
 type WorkerSuccess = {
   type: "success";
@@ -36,6 +40,9 @@ export default function App() {
   const [chatFileName, setChatFileName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [parseError, setParseError] = useState("");
+  const [sourceFile, setSourceFile] = useState<File | null>(null);
+  const [parseOptions, setParseOptions] =
+    useState<ParseOptions>(DEFAULT_PARSE_OPTIONS);
 
   const [chatSlug, setChatSlug] = useState("");
   const [fromDate, setFromDate] = useState("");
@@ -81,18 +88,33 @@ export default function App() {
   }, []);
 
   const onFile = (file: File) => {
+    setSourceFile(file);
+  };
+
+  useEffect(() => {
+    if (!sourceFile) return;
+
     const worker = workerRef.current;
     if (!worker) return;
 
     requestIdRef.current += 1;
     setIsLoading(true);
     setParseError("");
+    setChatFileName(sourceFile.name);
 
     worker.postMessage({
       requestId: requestIdRef.current,
-      file,
-      fileName: file.name,
+      file: sourceFile,
+      fileName: sourceFile.name,
+      options: parseOptions,
     });
+  }, [parseOptions, sourceFile]);
+
+  const setOption = (key: keyof ParseOptions) => {
+    setParseOptions((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
   };
 
   const humans = useMemo(() => {
@@ -130,12 +152,18 @@ export default function App() {
   >("activity");
 
   return (
-    <div className="min-h-screen bg-[#050510] text-white">
+    <div className="storm-shell min-h-screen text-white">
       <div className="container py-6 space-y-6">
-        <header className="flex justify-center items-center">
-          <h1 className="text-3xl font-bold text-purple-400 drop-shadow-lg">
-            Telegram Stats
+        <header className="flex flex-col gap-2 justify-center items-center text-center">
+          <div className="text-xs uppercase tracking-[0.18em] text-sky-200/80">
+            Tokyo Night Storm Edition
+          </div>
+          <h1 className="text-4xl font-bold text-sky-200 drop-shadow-[0_0_18px_rgba(56,189,248,0.35)]">
+            TStats
           </h1>
+          <div className="text-slate-400 text-sm">
+            Локальная аналитика экспорта Telegram без отправки данных на сервер
+          </div>
         </header>
 
         <FileDrop
@@ -146,7 +174,7 @@ export default function App() {
         />
 
         {humans.length > 0 && (
-          <div className="card bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20">
+          <div className="card">
             <div className="flex flex-col gap-4">
               <div className="flex justify-between gap-4 flex-wrap">
                 <div className="hdr">⚙️ Навигация</div>
@@ -168,9 +196,47 @@ export default function App() {
                 <input
                   value={chatSlug}
                   onChange={(e) => setChatSlug(e.target.value.trim())}
-                  placeholder="например: horny_alice"
-                  className="mt-1 w-full border rounded-lg px-3 py-2 bg-[#050510] border-slate-700 text-white focus:ring-2 focus:ring-purple-500"
+                  placeholder="например: durov"
+                  className="input"
                 />
+              </div>
+
+              <div className="rounded-xl border border-sky-900/70 bg-slate-950/50 px-3 py-3">
+                <div className="lbl mb-2">Общие настройки импорта</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 text-sm">
+                  <label className="switch-row">
+                    <input
+                      type="checkbox"
+                      checked={parseOptions.includeBots}
+                      onChange={() => setOption("includeBots")}
+                    />
+                    <span>Учитывать ботов</span>
+                  </label>
+                  <label className="switch-row">
+                    <input
+                      type="checkbox"
+                      checked={parseOptions.includeChannels}
+                      onChange={() => setOption("includeChannels")}
+                    />
+                    <span>Учитывать каналы</span>
+                  </label>
+                  <label className="switch-row">
+                    <input
+                      type="checkbox"
+                      checked={parseOptions.includeForwarded}
+                      onChange={() => setOption("includeForwarded")}
+                    />
+                    <span>Учитывать пересланные</span>
+                  </label>
+                  <label className="switch-row">
+                    <input
+                      type="checkbox"
+                      checked={parseOptions.includeServiceMessages}
+                      onChange={() => setOption("includeServiceMessages")}
+                    />
+                    <span>Учитывать сервисные</span>
+                  </label>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
@@ -180,7 +246,7 @@ export default function App() {
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
-                    className="mt-1 w-full border rounded-lg px-3 py-2 bg-[#050510] border-slate-700 text-white"
+                    className="input"
                   />
                 </div>
                 <div>
@@ -189,7 +255,7 @@ export default function App() {
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
-                    className="mt-1 w-full border rounded-lg px-3 py-2 bg-[#050510] border-slate-700 text-white"
+                    className="input"
                   />
                 </div>
                 <div>
@@ -198,7 +264,7 @@ export default function App() {
                     value={authorQuery}
                     onChange={(e) => setAuthorQuery(e.target.value)}
                     placeholder="например: Alice"
-                    className="mt-1 w-full border rounded-lg px-3 py-2 bg-[#050510] border-slate-700 text-white"
+                    className="input"
                   />
                 </div>
                 <div>
@@ -207,21 +273,21 @@ export default function App() {
                     value={minReactions}
                     onChange={(e) => setMinReactions(e.target.value.replace(/[^0-9]/g, ""))}
                     placeholder="0"
-                    className="mt-1 w-full border rounded-lg px-3 py-2 bg-[#050510] border-slate-700 text-white"
+                    className="input"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-                <div className="rounded-lg border border-slate-700 px-3 py-2 bg-[#050510]">
+                <div className="rounded-lg border border-sky-900/60 px-3 py-2 bg-slate-950/40">
                   <div className="text-slate-400">Сообщений (фильтр)</div>
                   <div className="text-lg font-semibold">{summary.messages}</div>
                 </div>
-                <div className="rounded-lg border border-slate-700 px-3 py-2 bg-[#050510]">
+                <div className="rounded-lg border border-sky-900/60 px-3 py-2 bg-slate-950/40">
                   <div className="text-slate-400">Уникальных авторов</div>
                   <div className="text-lg font-semibold">{summary.authors}</div>
                 </div>
-                <div className="rounded-lg border border-slate-700 px-3 py-2 bg-[#050510]">
+                <div className="rounded-lg border border-sky-900/60 px-3 py-2 bg-slate-950/40">
                   <div className="text-slate-400">Всего реакций</div>
                   <div className="text-lg font-semibold">{summary.reactions}</div>
                 </div>
@@ -249,7 +315,7 @@ export default function App() {
         {humans.length > 0 && tab === "social" && (
           <React.Suspense
             fallback={
-              <div className="card bg-gradient-to-br from-[#111122] to-[#0a0a15] shadow-lg shadow-purple-500/20 text-slate-300">
+              <div className="card text-slate-300">
                 Загрузка социального графа...
               </div>
             }

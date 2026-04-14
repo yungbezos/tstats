@@ -1,10 +1,11 @@
-import { parseMessages } from "../lib/telegram";
+import { parseMessages, type ParseOptions } from "../lib/telegram";
 import type { RawMessage, TelegramExport } from "../types";
 
 type WorkerRequest = {
   requestId: number;
   file: File;
   fileName: string;
+  options: ParseOptions;
 };
 
 const ctx = self as unknown as {
@@ -13,7 +14,7 @@ const ctx = self as unknown as {
 };
 
 ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
-  const { requestId, file, fileName } = event.data;
+  const { requestId, file, fileName, options } = event.data;
 
   try {
     const rawText = await file.text();
@@ -22,7 +23,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       ? json.messages
       : [];
 
-    const messages = parseMessages(sourceMessages);
+    const messages = parseMessages(sourceMessages, options);
 
     ctx.postMessage({
       type: "success",
