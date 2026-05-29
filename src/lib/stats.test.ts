@@ -12,6 +12,10 @@ function message(overrides: Partial<ParsedMessage>): ParsedMessage {
     reactions: { "👍": 1 },
     fullDateISO: "2026-01-01T10:00:00.000Z",
     total: 1,
+    dateWeekStartISO: "2025-12-29",
+    dateWeekKey: "2026-W01",
+    dateWeekday: 3,
+    dateHour: 10,
     ...overrides,
   };
 }
@@ -34,9 +38,9 @@ describe("stats", () => {
 
   it("builds ISO weekly trend keys", () => {
     const input = [
-      message({ id: 1, fullDateISO: "2025-12-29T09:00:00.000Z" }),
-      message({ id: 2, fullDateISO: "2026-01-02T09:00:00.000Z" }),
-      message({ id: 3, fullDateISO: "2026-01-09T09:00:00.000Z" }),
+      message({ id: 1, fullDateISO: "2025-12-29T09:00:00.000Z", dateWeekKey: "2026-W01" }),
+      message({ id: 2, fullDateISO: "2026-01-02T09:00:00.000Z", dateWeekKey: "2026-W01" }),
+      message({ id: 3, fullDateISO: "2026-01-09T09:00:00.000Z", dateWeekKey: "2026-W02" }),
     ];
 
     const trend = buildWeeklyTrend(input);

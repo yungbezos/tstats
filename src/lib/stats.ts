@@ -1,5 +1,4 @@
 import { ParsedMessage, Row, Node, Link } from "../types";
-import { weekKey } from "./helpers";
 
 /**
  * NOTE: All functions in this module expect an array of *already filtered* messages.
@@ -78,10 +77,9 @@ export function buildHourWeekdayHeatmap(messages: ParsedMessage[]) {
   const matrix = Array.from({ length: 7 }, () => Array<number>(24).fill(0));
 
   for (const m of messages) {
-    const d = new Date(m.fullDateISO);
-    const weekday = (d.getUTCDay() + 6) % 7; // 0=Mon … 6=Sun
+    const weekday = m.dateWeekday;
     if (weekday < 0 || weekday > 6) continue;
-    const hour = d.getHours();
+    const hour = m.dateHour;
     if (hour < 0 || hour > 23) continue;
     matrix[weekday][hour] += 1;
   }
@@ -111,7 +109,7 @@ export function buildDailyChart(messages: ParsedMessage[]) {
 export function buildWeeklyTrend(messages: ParsedMessage[]) {
   const counts = new Map<string, number>();
   for (const m of messages) {
-    const key = weekKey(new Date(m.fullDateISO));
+    const key = m.dateWeekKey;
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
   return Array.from(counts.entries())
