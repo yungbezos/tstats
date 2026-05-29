@@ -1,6 +1,7 @@
 // src/components/social/GraphCanvas.tsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ForceGraph2D, { type ForceGraphMethods } from "react-force-graph-2d";
+import { getId } from "../../lib/helpers";
 
 type GNode = {
   id: string | number;
@@ -32,11 +33,6 @@ type Props = {
   onBackgroundClick: () => void;
   height?: number;
 };
-
-const getId = (x: unknown): string | number =>
-  typeof x === "object" && x !== null && "id" in (x as any)
-    ? (x as any).id
-    : (x as any);
 
 const linkW = (l: GLink) => Number(l.weight ?? l.value ?? 0) || 0;
 

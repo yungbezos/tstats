@@ -2,6 +2,7 @@
 import React, { useMemo } from "react";
 import ChartCard from "../charts/ChartCard";
 import type { Node as TNode } from "../../types";
+import { getId } from "../../lib/helpers";
 
 type GLink = {
   source: string | number;
@@ -16,11 +17,6 @@ type Props = {
   selectedNodeId: string | number | null;
   selectedLink: { a: string | number; b: string | number } | null;
 };
-
-const getId = (x: unknown) =>
-  typeof x === "object" && x !== null && "id" in (x as any)
-    ? (x as any).id
-    : (x as any);
 
 export default function GraphInfoPanel({
   data,
