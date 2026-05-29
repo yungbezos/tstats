@@ -12,6 +12,8 @@ function message(overrides: Partial<ParsedMessage>): ParsedMessage {
     reactions: { "👍": 1 },
     fullDateISO: "2026-01-01T10:00:00.000Z",
     total: 1,
+    weekDateISO: "2025-12-29",
+    weekKeyISO: "2026-W01",
     ...overrides,
   };
 }
