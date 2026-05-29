@@ -76,13 +76,23 @@ export function buildTopAuthorsByReactions(
 
 export function buildHourWeekdayHeatmap(messages: ParsedMessage[]) {
   const matrix = Array.from({ length: 7 }, () => Array<number>(24).fill(0));
+  const weekdayCache = new Map<string, number>();
 
   for (const m of messages) {
-    const d = new Date(m.fullDateISO);
-    const weekday = (d.getUTCDay() + 6) % 7; // 0=Mon … 6=Sun
+    const datePart = m.fullDateISO.slice(0, 10);
+    let weekday = weekdayCache.get(datePart);
+    if (weekday === undefined) {
+      weekday = (new Date(datePart).getUTCDay() + 6) % 7; // 0=Mon … 6=Sun
+      weekdayCache.set(datePart, weekday);
+    }
     if (weekday < 0 || weekday > 6) continue;
-    const hour = d.getHours();
-    if (hour < 0 || hour > 23) continue;
+
+    const hour =
+      typeof m.date === "string" && m.date.length >= 13
+        ? parseInt(m.date.slice(11, 13), 10)
+        : new Date(m.fullDateISO).getHours();
+
+    if (Number.isNaN(hour) || hour < 0 || hour > 23) continue;
     matrix[weekday][hour] += 1;
   }
 
@@ -110,8 +120,14 @@ export function buildDailyChart(messages: ParsedMessage[]) {
 
 export function buildWeeklyTrend(messages: ParsedMessage[]) {
   const counts = new Map<string, number>();
+  const cache = new Map<string, string>();
   for (const m of messages) {
-    const key = weekKey(new Date(m.fullDateISO));
+    const datePart = m.fullDateISO.slice(0, 10);
+    let key = cache.get(datePart);
+    if (!key) {
+      key = weekKey(new Date(datePart));
+      cache.set(datePart, key);
+    }
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
   return Array.from(counts.entries())
