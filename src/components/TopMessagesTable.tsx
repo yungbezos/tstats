@@ -1,5 +1,6 @@
 // src/components/TopMessagesTable.tsx
 import React from "react";
+import { getSafeMessageLink } from "../lib/telegram";
 
 export type MessageRow = {
   rank: number;
@@ -15,8 +16,7 @@ type Props = {
 };
 
 export default function TopMessagesTable({ rows, chatSlug }: Props) {
-  const mkLink = (id?: number) =>
-    id != null && chatSlug ? `https://t.me/${chatSlug}/${id}` : undefined;
+  const mkLink = (id?: number) => getSafeMessageLink(chatSlug, id);
 
   return (
     <div className="overflow-x-auto -mx-2 md:mx-0">

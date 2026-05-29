@@ -1,5 +1,6 @@
 // src/components/content/LongestMessagesTable.tsx
 import React from "react";
+import { getSafeMessageLink } from "../../lib/telegram";
 
 export type LongRow = {
   rank: number;
@@ -11,8 +12,7 @@ export type LongRow = {
 type Props = { rows: LongRow[]; chatSlug?: string };
 
 export default function LongestMessagesTable({ rows, chatSlug }: Props) {
-  const msgLink = (id?: number) =>
-    chatSlug && id ? `https://t.me/${chatSlug}/${id}` : undefined;
+  const msgLink = (id?: number) => getSafeMessageLink(chatSlug, id);
 
   return (
     <div className="overflow-x-auto -mx-2 md:mx-0">
