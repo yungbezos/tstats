@@ -8,8 +8,11 @@ export default function TopReactionMessagesTable({
   rows: Row[];
   chatSlug?: string;
 }) {
-  const mkLink = (id?: string | number) =>
-    id != null && chatSlug ? `https://t.me/${chatSlug}/${id}` : undefined;
+  const mkLink = (id?: string | number) => {
+    if (id == null || !chatSlug) return undefined;
+    if (/^(javascript|data|vbscript):/i.test(chatSlug)) return undefined;
+    return `https://t.me/${chatSlug}/${id}`;
+  };
 
   return (
     <div className="overflow-x-auto">
