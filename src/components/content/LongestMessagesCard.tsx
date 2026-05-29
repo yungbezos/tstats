@@ -1,4 +1,5 @@
 import React from "react";
+import { getMessageLink } from "../../lib/telegram";
 
 type Row = {
   from: string;
@@ -14,8 +15,7 @@ export default function LongestMessagesCard({
   rows: Row[];
   chatSlug?: string;
 }) {
-  const linkOf = (id?: number) =>
-    chatSlug && id ? `https://t.me/${chatSlug}/${id}` : undefined;
+  const linkOf = (id?: number) => getMessageLink(chatSlug, id);
 
   return (
     <div className="card relative">
