@@ -74,7 +74,7 @@ export default function ThemedArea({
                 color: "#fff",
                 fontSize: 12,
               }}
-              formatter={(val: any) => [String(val), tooltipLabel]}
+              formatter={(val: number | string) => [String(val), tooltipLabel]}
               labelFormatter={(lab) => String(lab)}
             />
             <Area
