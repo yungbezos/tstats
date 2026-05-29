@@ -9,7 +9,9 @@ export default function TopReactionMessagesTable({
   chatSlug?: string;
 }) {
   const mkLink = (id?: string | number) =>
-    id != null && chatSlug ? `https://t.me/${chatSlug}/${id}` : undefined;
+    id != null && chatSlug
+      ? `https://t.me/${chatSlug.replace(/[^a-zA-Z0-9_\-/]/g, "")}/${id}`
+      : undefined;
 
   return (
     <div className="overflow-x-auto">

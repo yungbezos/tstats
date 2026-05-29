@@ -12,7 +12,9 @@ type Props = { rows: LongRow[]; chatSlug?: string };
 
 export default function LongestMessagesTable({ rows, chatSlug }: Props) {
   const msgLink = (id?: number) =>
-    chatSlug && id ? `https://t.me/${chatSlug}/${id}` : undefined;
+    chatSlug && id
+      ? `https://t.me/${chatSlug.replace(/[^a-zA-Z0-9_\-/]/g, "")}/${id}`
+      : undefined;
 
   return (
     <div className="overflow-x-auto -mx-2 md:mx-0">

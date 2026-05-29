@@ -15,7 +15,9 @@ export default function LongestMessagesCard({
   chatSlug?: string;
 }) {
   const linkOf = (id?: number) =>
-    chatSlug && id ? `https://t.me/${chatSlug}/${id}` : undefined;
+    chatSlug && id
+      ? `https://t.me/${chatSlug.replace(/[^a-zA-Z0-9_\-/]/g, "")}/${id}`
+      : undefined;
 
   return (
     <div className="card relative">
