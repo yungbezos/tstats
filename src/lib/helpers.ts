@@ -171,3 +171,12 @@ export function weekKey(d: Date): string {
 
   return `${weekYear}-W${String(week).padStart(2, "0")}`;
 }
+
+/**
+ * Helper to extract an ID from an object or return the value if it's already a primitive.
+ */
+export function getId(x: unknown): string | number {
+  return typeof x === "object" && x !== null && "id" in x
+    ? ((x as Record<string, unknown>).id as string | number)
+    : (x as string | number);
+}
