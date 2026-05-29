@@ -1,5 +1,6 @@
 // src/lib/telegram.ts
 import { ParsedMessage, RawMessage } from "../types";
+import { weekKey } from "./helpers";
 
 /* ======================= helpers ======================= */
 
@@ -104,6 +105,7 @@ export function parseMessages(
     if (Number.isNaN(date.getTime())) continue;
     const fullDateISO = date.toISOString();
     const total = Object.values(reactions).reduce((a, b) => a + b, 0);
+    const week = weekKey(date);
 
     const pm: ParsedMessage = {
       id: Number(m.id),
@@ -116,6 +118,7 @@ export function parseMessages(
       media_type: m.media_type,
       fullDateISO,
       total,
+      week,
     };
 
     const uid = pm.from_id!;

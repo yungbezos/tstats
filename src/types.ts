@@ -21,6 +21,7 @@ export interface TelegramExport {
 export interface ParsedMessage extends RawMessage {
   fullDateISO: string;
   total: number;
+  week: string;
 }
 
 export interface Row {

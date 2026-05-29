@@ -1,5 +1,4 @@
 import { ParsedMessage, Row, Node, Link } from "../types";
-import { weekKey } from "./helpers";
 
 /**
  * NOTE: All functions in this module expect an array of *already filtered* messages.
@@ -111,7 +110,7 @@ export function buildDailyChart(messages: ParsedMessage[]) {
 export function buildWeeklyTrend(messages: ParsedMessage[]) {
   const counts = new Map<string, number>();
   for (const m of messages) {
-    const key = weekKey(new Date(m.fullDateISO));
+    const key = m.week;
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
   return Array.from(counts.entries())
