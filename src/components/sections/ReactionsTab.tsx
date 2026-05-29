@@ -49,8 +49,10 @@ export default function ReactionsTab({
   const emojiCountsAll = useMemo(() => {
     const cnt: Record<string, number> = {};
     humans.forEach((m) => {
-      const r = classicByMessageId.get(m.id)?.byEmoji ?? {};
-      for (const k of Object.keys(r)) cnt[k] = (cnt[k] ?? 0) + r[k];
+      const r = classicByMessageId.get(m.id)?.byEmoji;
+      if (r) {
+        for (const k in r) cnt[k] = (cnt[k] ?? 0) + r[k];
+      }
     });
     return Object.entries(cnt)
       .map(([emoji, count]) => ({ emoji, count }))
