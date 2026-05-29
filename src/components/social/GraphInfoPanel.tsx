@@ -17,10 +17,10 @@ type Props = {
   selectedLink: { a: string | number; b: string | number } | null;
 };
 
-const getId = (x: unknown) =>
-  typeof x === "object" && x !== null && "id" in (x as any)
-    ? (x as any).id
-    : (x as any);
+const getId = (x: unknown): string | number =>
+  typeof x === "object" && x !== null && "id" in x
+    ? (x.id as string | number)
+    : (x as string | number);
 
 export default function GraphInfoPanel({
   data,
