@@ -144,3 +144,20 @@ export function isHumanAuthor(m: ParsedMessage): boolean {
   if (looksLikeBot(m.from)) return false;
   return true;
 }
+
+export function getSafeMessageLink(chatSlug?: string, id?: number | string): string | undefined {
+  if (!chatSlug || id == null) return undefined;
+
+  const trimmedSlug = chatSlug.trim();
+  if (!trimmedSlug) return undefined;
+
+  // Basic sanitization: block javascript:, data:, vbscript: etc
+  if (/^(javascript|data|vbscript):/i.test(trimmedSlug)) {
+    return undefined;
+  }
+
+  const safeSlug = encodeURIComponent(trimmedSlug);
+  const safeId = encodeURIComponent(String(id).trim());
+
+  return `https://t.me/${safeSlug}/${safeId}`;
+}

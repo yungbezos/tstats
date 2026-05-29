@@ -1,5 +1,6 @@
 import React from "react";
 import type { Row } from "../../types";
+import { getSafeMessageLink } from "../../lib/telegram";
 
 export default function TopReactionMessagesTable({
   rows,
@@ -8,8 +9,7 @@ export default function TopReactionMessagesTable({
   rows: Row[];
   chatSlug?: string;
 }) {
-  const mkLink = (id?: string | number) =>
-    id != null && chatSlug ? `https://t.me/${chatSlug}/${id}` : undefined;
+  const mkLink = (id?: string | number) => getSafeMessageLink(chatSlug, id);
 
   return (
     <div className="overflow-x-auto">
