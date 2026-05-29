@@ -5,7 +5,7 @@ import StableAuthorsTable from "../social/StableAuthorsTable";
 import ReplyGraph from "../social/ReplyGraph";
 import { buildReplyGraph } from "../../lib/stats";
 import type { ParsedMessage, Row } from "../../types";
-import { pageSlice, weekKey, weekStartISO } from "../../lib/helpers";
+import { pageSlice } from "../../lib/helpers";
 
 export default function SocialTab({
   humans,
@@ -32,8 +32,7 @@ export default function SocialTab({
     humans.forEach((m) => {
       const uid = m.from_id ?? "";
       if (!uid) return;
-      const d = new Date(m.fullDateISO);
-      const wkDate = weekStartISO(d);
+      const wkDate = m.dateWeekStartISO;
       map[wkDate] = map[wkDate] ?? new Set<string>();
       map[wkDate].add(uid);
     });
@@ -47,7 +46,7 @@ export default function SocialTab({
     humans.forEach((m) => {
       const uid = m.from_id ?? "";
       if (!uid) return;
-      const wk = weekKey(new Date(m.fullDateISO));
+      const wk = m.dateWeekKey;
       const prev = firstWeekByAuthor.get(uid);
       if (!prev || wk < prev) firstWeekByAuthor.set(uid, wk);
     });
@@ -65,8 +64,7 @@ export default function SocialTab({
     humans.forEach((m) => {
       const uid = m.from_id ?? "";
       if (!uid) return;
-      const d = new Date(m.fullDateISO);
-      const wk = weekKey(d);
+      const wk = m.dateWeekKey;
       map[uid] = map[uid] ?? new Set<string>();
       map[uid].add(wk);
     });

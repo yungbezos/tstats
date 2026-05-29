@@ -1,5 +1,6 @@
 // src/lib/telegram.ts
 import { ParsedMessage, RawMessage } from "../types";
+import { weekStartISO, weekKey } from "./helpers";
 
 /* ======================= helpers ======================= */
 
@@ -116,6 +117,10 @@ export function parseMessages(
       media_type: m.media_type,
       fullDateISO,
       total,
+      dateWeekStartISO: weekStartISO(date),
+      dateWeekKey: weekKey(date),
+      dateWeekday: (date.getUTCDay() + 6) % 7,
+      dateHour: date.getHours(),
     };
 
     const uid = pm.from_id!;
