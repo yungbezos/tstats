@@ -14,8 +14,11 @@ export default function LongestMessagesCard({
   rows: Row[];
   chatSlug?: string;
 }) {
-  const linkOf = (id?: number) =>
-    chatSlug && id ? `https://t.me/${chatSlug}/${id}` : undefined;
+  const linkOf = (id?: number) => {
+    if (id == null || !chatSlug) return undefined;
+    if (/^(javascript|data|vbscript):/i.test(chatSlug)) return undefined;
+    return `https://t.me/${chatSlug}/${id}`;
+  };
 
   return (
     <div className="card relative">
