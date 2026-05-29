@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import { buildTopMessages, buildWeeklyTrend } from "./stats";
 import type { ParsedMessage } from "../types";
 
+import { weekKey, weekStartISO } from "./helpers";
+
 function message(overrides: Partial<ParsedMessage>): ParsedMessage {
+  const d = new Date(overrides.fullDateISO || "2026-01-01T10:00:00.000Z");
   return {
     id: 1,
     from: "Alice",
@@ -12,6 +15,8 @@ function message(overrides: Partial<ParsedMessage>): ParsedMessage {
     reactions: { "👍": 1 },
     fullDateISO: "2026-01-01T10:00:00.000Z",
     total: 1,
+    weekKey: weekKey(d),
+    weekStartISO: weekStartISO(d),
     ...overrides,
   };
 }
