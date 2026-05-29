@@ -16,7 +16,9 @@ type Props = {
 
 export default function TopMessagesTable({ rows, chatSlug }: Props) {
   const mkLink = (id?: number) =>
-    id != null && chatSlug ? `https://t.me/${chatSlug}/${id}` : undefined;
+    id != null && chatSlug
+      ? `https://t.me/${chatSlug.replace(/[^a-zA-Z0-9_\-/]/g, "")}/${id}`
+      : undefined;
 
   return (
     <div className="overflow-x-auto -mx-2 md:mx-0">
