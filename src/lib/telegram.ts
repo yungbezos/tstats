@@ -144,3 +144,22 @@ export function isHumanAuthor(m: ParsedMessage): boolean {
   if (looksLikeBot(m.from)) return false;
   return true;
 }
+
+/**
+ * Возвращает безопасную ссылку на сообщение, избегая потенциального XSS.
+ */
+export function getMessageLink(chatSlug?: string, id?: string | number): string | undefined {
+  if (!chatSlug || id == null) return undefined;
+
+  const trimmedSlug = chatSlug.trim();
+  if (!trimmedSlug) return undefined;
+
+  // Простая защита от XSS: запрещаем протоколы
+  if (/^(javascript|data|vbscript):/i.test(trimmedSlug)) {
+    return undefined;
+  }
+
+  // Telegram username может содержать a-z, 0-9 и _, но также бывают ссылки-инвайты (начинаются с +)
+  // Используем encodeURIComponent для безопасной вставки в URL.
+  return `https://t.me/${encodeURIComponent(trimmedSlug)}/${encodeURIComponent(id)}`;
+}
