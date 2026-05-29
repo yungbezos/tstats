@@ -48,11 +48,13 @@ function normalizeText(text: unknown): string {
   return "";
 }
 
-function normalizeReactions(raw: RawMessage): Record<string, number> {
+function normalizeReactions(raw: RawMessage): { reactions: Record<string, number>, total: number } {
   const r = raw?.reactions;
-  if (!r) return {};
+  if (!r) return { reactions: {}, total: 0 };
+
   if (Array.isArray(r)) {
     const acc: Record<string, number> = {};
+    let total = 0;
     for (const item of r) {
       const customId = String(
         item?.custom_emoji_id ?? item?.document_id ?? "",
@@ -64,12 +66,24 @@ function normalizeReactions(raw: RawMessage): Record<string, number> {
             ? `custom:${customId}`
             : "";
       const c = Number(item?.count ?? 0);
-      if (e) acc[e] = (acc[e] ?? 0) + c;
+      if (e) {
+        acc[e] = (acc[e] ?? 0) + c;
+        total += c;
+      }
     }
-    return acc;
+    return { reactions: acc, total };
   }
-  if (typeof r === "object") return { ...(r as Record<string, number>) };
-  return {};
+
+  if (typeof r === "object") {
+    const reactions = { ...(r as Record<string, number>) };
+    let total = 0;
+    for (const key in reactions) {
+      total += reactions[key];
+    }
+    return { reactions, total };
+  }
+
+  return { reactions: {}, total: 0 };
 }
 
 /** Глобальный предикат допуска сообщения (по raw) */
@@ -99,11 +113,10 @@ export function parseMessages(
     if (!allowRawMessage(m, options)) continue;
 
     const text = normalizeText(m.text);
-    const reactions = normalizeReactions(m);
+    const { reactions, total } = normalizeReactions(m);
     const date = new Date(m.date);
     if (Number.isNaN(date.getTime())) continue;
     const fullDateISO = date.toISOString();
-    const total = Object.values(reactions).reduce((a, b) => a + b, 0);
 
     const pm: ParsedMessage = {
       id: Number(m.id),
