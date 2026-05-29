@@ -31,11 +31,22 @@ export default function FileDrop({
     submitFile(file);
   };
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      inputRef.current?.click();
+    }
+  };
+
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label="Upload JSON file"
       onDragOver={(e) => e.preventDefault()}
       onDrop={onDrop}
-      className="card border-2 border-dashed border-sky-500/50 bg-slate-950/45 text-center py-10 cursor-pointer hover:bg-slate-900/70 transition"
+      onKeyDown={onKeyDown}
+      className="card border-2 border-dashed border-sky-500/50 bg-slate-950/45 text-center py-10 cursor-pointer hover:bg-slate-900/70 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
       onClick={() => inputRef.current?.click()}
     >
       <input
