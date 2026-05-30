@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 interface Props {
   onFile: (file: File) => void;
@@ -14,6 +14,7 @@ export default function FileDrop({
   error,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const submitFile = (file?: File) => {
     if (!file) return;
@@ -25,17 +26,44 @@ export default function FileDrop({
     submitFile(file);
   };
 
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const onDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     submitFile(file);
   };
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      inputRef.current?.click();
+    }
+  };
+
   return (
     <div
-      onDragOver={(e) => e.preventDefault()}
+      role="button"
+      tabIndex={0}
+      aria-label="Upload JSON file"
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
       onDrop={onDrop}
-      className="card border-2 border-dashed border-sky-500/50 bg-slate-950/45 text-center py-10 cursor-pointer hover:bg-slate-900/70 transition"
+      onKeyDown={onKeyDown}
+      className={`card border-2 border-dashed text-center py-10 cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+        isDragging
+          ? "border-sky-400 bg-slate-800/80 shadow-[0_0_15px_rgba(56,189,248,0.3)]"
+          : "border-sky-500/50 bg-slate-950/45 hover:bg-slate-900/70"
+      }`}
       onClick={() => inputRef.current?.click()}
     >
       <input
